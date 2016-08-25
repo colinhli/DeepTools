@@ -36,7 +36,8 @@ class CaffeBlob(object):
 
         M = int(M)
         N = int(N)
-        print 'features map: {0} * ({1} * {2})'.format(self.channels, M, N) 
+
+        print 'features map: {0} * ({1} * {2})'.format(self.channels, self.width, self.height) 
         
         margin = 4
         image_size = self.width
@@ -112,7 +113,7 @@ def main(argv):
     parser.add_argument(
         "--model_def",
         default=os.path.join(pycaffe_dir,
-                "../models/VGG/VGG_ILSVRC_16_layers_depoly.prototxt"),
+                "../models/VGG/VGG_ILSVRC_16_layers_depoly_inv.prototxt"),
         help="Model definition file."
     )
     parser.add_argument(
@@ -142,10 +143,8 @@ def main(argv):
     image = caffe.io.load_image(args.input_file)  
 
     detector = VGGFeature(args.model_def, args.pretrained_model, mean=mean,
-            raw_scale=255.0, channel_swap='2,1,0') 
-    
-    
-    detector.extract_feature(image, 'conv1_1')
+            raw_scale=255.0, channel_swap='2,1,0')  
 
+    detector.extract_feature(image, 'unpool1')  
 if __name__ == "__main__": 
     main(sys.argv)
