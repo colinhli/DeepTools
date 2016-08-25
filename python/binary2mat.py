@@ -24,8 +24,7 @@ if __name__ == '__main__':
     data = open(BINARY_PROTO_FILE_NAME, 'rb').read()
     blob.ParseFromString(data)
 
-    arr = np.array(caffe.io.blobproto_to_array(blob))
-
+    arr = np.array(caffe.io.blobproto_to_array(blob)) 
     out = arr[0]
     out = np.transpose(out, (1, 2, 0))
     scipy.io.savemat(args.output, dict(image_mean=out))

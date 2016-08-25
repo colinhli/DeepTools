@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-#coding:utf-8
-import caffe
+#coding:utf-8 
 import numpy as np
 import sys
 import scipy.io
 import argparse
-
+sys.path.append("./caffe/python")
+import caffe
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -14,7 +14,7 @@ if __name__ == '__main__':
     )
     parser.add_argument(
         "output",
-        help="output .npy"
+        help="output .npy [Channels x Height x Width] "
     )
 
     args = parser.parse_args()
@@ -26,6 +26,6 @@ if __name__ == '__main__':
 
     arr = np.array(caffe.io.blobproto_to_array(blob)) 
     out = arr[0]
-    #out = np.transpose(out, (1, 2, 0))
+    # out = np.transpose(out, (2, 1, 0))
     np.save(NPY_FILE_PATH, out)
 
