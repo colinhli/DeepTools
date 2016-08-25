@@ -11,6 +11,7 @@ sys.path.append('./caffe/python')
 import caffe
 import math
 
+#wrap _caffe.blob
 class CaffeBlob(object): 
     def __init__(self, net, blobname):
         self.net = net
@@ -47,11 +48,12 @@ class CaffeBlob(object):
             image -= d.min()
             image /= (d.max() - d.min())
             image *= 255 
+            image = image.astype(np.uint8)
 
             m = int(i / N)
             n = int(i % N)
             features_image[margin - 1 + m * (image_size + margin): margin - 1 + m * (image_size + margin) + image_size,
-                        margin - 1 + n * (image_size + margin): margin - 1 + n * (image_size + margin) + image_size] = image.astype(np.uint8)
+                        margin - 1 + n * (image_size + margin): margin - 1 + n * (image_size + margin) + image_size] = image
 
         return Image.fromarray(features_image)
 
@@ -63,8 +65,7 @@ class Feature(caffe.Classifier):
     def set_weights():
         pass
     def extract_feature(self, input, layer_name): 
-        in_ = caffe.io.resize_image(input, self.image_dims)
-
+        in_ = caffe.io.resize_image(input, self.image_dims) 
         caffe_in = np.zeros((1, input.shape[2], self.image_dims[1], self.image_dims[0]), dtype=np.float32) 
         caffe_in[0] = self.transformer.preprocess(self.inputs[0], in_)
         out = self.forward_all(**{self.inputs[0]: caffe_in})   
@@ -101,12 +102,12 @@ def main(argv):
         If .csv, must be comma-separated file with header\
         'filename, xmin, ymin, xmax, ymax'"
     )
+
     # parser.add_argument(
     #     "output_file",
     #     help="Output h5/csv filename. Format depends on extension."
     # )
     # Optional arguments.
-
     
     parser.add_argument(
         "--model_def",

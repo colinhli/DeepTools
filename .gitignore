@@ -1,3 +1,4 @@
 *.caffemodel
 /.vscode
-/caffe
+caffe
+*.bak
