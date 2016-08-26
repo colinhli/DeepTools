@@ -47,7 +47,7 @@ class CaffeBlob(object):
             d =  self.data[0, i, :, :]
             image = d.copy()
             image -= d.min()
-            image /= (d.max() - d.min())
+            image /= (d.max() - d.min()) 
             image *= 255 
             image = image.astype(np.uint8)
 
@@ -84,6 +84,8 @@ class VGGFeature(Feature):
         self.set_weights()
 
     def set_weights(self):
+        self.params["conv1t_2"][0].data[...] = self.params["conv1_2"][0].data.transpose(0,1,3,2)
+        self.params["conv1t_1"][0].data[...] = self.params["conv1_1"][0].data.transpose(0,1,3,2) 
         pass
     
 def create_vgg_mean():
@@ -145,6 +147,6 @@ def main(argv):
     detector = VGGFeature(args.model_def, args.pretrained_model, mean=mean,
             raw_scale=255.0, channel_swap='2,1,0')  
 
-    detector.extract_feature(image, 'unpool1')  
+    detector.extract_feature(image, 'conv1t_1')  
 if __name__ == "__main__": 
     main(sys.argv)
